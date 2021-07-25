@@ -77,7 +77,7 @@ class MixupBertForSequenceClassification(BertPreTrainedModel):
 
         outputs = self.bert(input_ids, attention_mask=attention_mask, token_type_ids=token_type_ids,
         position_ids=position_ids, head_mask=head_mask, inputs_embeds=inputs_embeds,
-         output_attentions=output_attentions, output_hidden_states=output_hidden_states, return_dict=return_dict)
+        output_attentions=output_attentions, output_hidden_states=output_hidden_states, return_dict=return_dict)
 
         pooled_output = outputs[1]
 
@@ -99,14 +99,12 @@ class MixupBertForSequenceClassification(BertPreTrainedModel):
                     #  We are doing regression
                     loss = loss_fct(logits.view(-1), labels.view(-1))
                 else:
-                    #loss_mixup = loss_fct(logits_hat.view(-1), labels_hat.view(-1))
                     loss_mixup = mixup_criterion(loss_fct, logits_hat.view(-1), labels_a.view(-1), labels_b.view(-1))
             else:
                 loss_fct = CrossEntropyLoss()
                 if warm_up:
                     loss = loss_fct(logits.view(-1, self.num_labels), labels.view(-1))
                 else:
-                    #loss_mixup = loss_fct(logits_hat.view(-1, self.num_labels), labels_hat.view(-1))
                     loss_mixup = mixup_criterion(loss_fct, logits_hat.view(-1, self.num_labels), labels_a.view(-1), labels_b.view(-1))
 
         if not return_dict:

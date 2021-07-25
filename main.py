@@ -26,7 +26,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--seed', default=0, type=int, help='Seed')
-    parser.add_argument('--model', default='bert-base', type=str, help='bert-base, roberta-large, roberta-base, roberta-small')
+    parser.add_argument('--model', default='bert-base', type=str, help='only bert-base available')
     parser.add_argument('--dataset', default='ynat', type=str, help='ynat, hateful')
     parser.add_argument('--output_dir', default='checkpoint/', type=str, help='Checkpoint directory/')
     parser.add_argument('--result_dir', default='results/', type=str, help='Result directory/')
@@ -35,7 +35,7 @@ if __name__ == '__main__':
     parser.add_argument('--wd', default=0.01, type=float, help='Weight decay coefficient')
     parser.add_argument('--batch_size', default=8, type=int, help='Batch size [8, 16, 32]')
     parser.add_argument('--total_epochs', default=10, type=int, help='Number of epochs')
-    parser.add_argument('--mixup', default=True, type=str2bool, help="Mixup Method")
+    parser.add_argument('--mixup', default=False, type=str2bool, help="Mixup Method")
     parser.add_argument('--label_smoothing', default=0.0, type=float, help="Label smoothing factor")
 
     p_args = parser.parse_args()
@@ -99,37 +99,22 @@ if __name__ == '__main__':
     valid_dataset = preprocessed_datasets['validation']
 
     args = TrainingArguments(
-        output_dir=p_args.output_dir,
-        evaluation_strategy='epoch',
-        learning_rate=p_args.lr,
-        per_device_train_batch_size=p_args.batch_size,
-        per_device_eval_batch_size=p_args.batch_size,
-        num_train_epochs=p_args.total_epochs,
-        weight_decay=p_args.wd,
-        warmup_ratio=p_args.wr,
-        seed=p_args.seed,
-        save_total_limit=1,
-        logging_strategy="no",
-        label_smoothing_factor=p_args.label_smoothing,
+        output_dir=p_args.output_dir, evaluation_strategy='epoch', learning_rate=p_args.lr,
+        per_device_train_batch_size=p_args.batch_size, per_device_eval_batch_size=p_args.batch_size,
+        num_train_epochs=p_args.total_epochs, weight_decay=p_args.wd,
+        warmup_ratio=p_args.wr, seed=p_args.seed, save_total_limit=1,
+        logging_strategy="no", label_smoothing_factor=p_args.label_smoothing
     )
 
     if p_args.mixup:
         trainer = MixupTrainer(
-            model,
-            args,
-            train_dataset=train_dataset,
-            eval_dataset=valid_dataset,
-            tokenizer=tokenizer,
-            compute_metrics=compute_metrics,
+            model, args, train_dataset=train_dataset, eval_dataset=valid_dataset,
+            tokenizer=tokenizer, compute_metrics=compute_metrics,
         )
     else:
         trainer = CustomTrainer(
-            model,
-            args,
-            train_dataset=train_dataset,
-            eval_dataset=valid_dataset,
-            tokenizer=tokenizer,
-            compute_metrics=compute_metrics,
+            model, args, train_dataset=train_dataset, eval_dataset=valid_dataset,
+            tokenizer=tokenizer, compute_metrics=compute_metrics,
         )
 
     trainer.train()
@@ -160,7 +145,7 @@ if __name__ == '__main__':
     if not os.path.exists(full_log_dir):
         os.mkdir(full_log_dir)
 
-    path = f'{full_log_dir}/model_{p_args.model}_lr_{p_args.lr}_wr_{p_args.wr}_wd_{p_args.wd}_bs_{p_args.batch_size}_te_{p_args.total_epochs}_ls_{p_args.label_smoothing}.json'
+    path = f'{full_log_dir}/model_{p_args.model}_lr_{p_args.lr}_wr_{p_args.wr}_wd_{p_args.wd}_bs_{p_args.batch_size}_te_{p_args.total_epochs}_ls_{p_args.label_smoothing}_mixup_{str(p_args.mixup)}.json'
 
     with open(path, 'w') as f:
         result = {
