@@ -27,7 +27,8 @@ if __name__ == '__main__':
 
     parser.add_argument('--seed', default=0, type=int, help='Seed')
     parser.add_argument('--model', default='bert-base', type=str, help='only bert-base available')
-    parser.add_argument('--dataset', default='ynat', type=str, help='ynat, hateful')
+    parser.add_argument('--dataratio', default='1.0', type=str, help='data ratio')
+    parser.add_argument('--dataset', default='ynat', type=str, help='ynat, hateful, ynat0.1')
     parser.add_argument('--output_dir', default='checkpoint/', type=str, help='Checkpoint directory/')
     parser.add_argument('--result_dir', default='results/', type=str, help='Result directory/')
     parser.add_argument('--lr', default=5e-5, type=float, help='Learning rate')
@@ -58,7 +59,7 @@ if __name__ == '__main__':
     # Load the dataset
     data_dir = f"data/{p_args.dataset}"
     data_files = {"train": [], "validation": []}
-    data_files["train"].append(f"{data_dir}/train.json")
+    data_files["train"].append(f"{data_dir}/{p_args.dataratio}/train.json")
     data_files["validation"].append(f"{data_dir}/validation.json")
     datasets = load_dataset(path="json", data_dir=data_dir, data_files=data_files, field='data')
 
