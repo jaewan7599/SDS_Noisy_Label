@@ -60,7 +60,7 @@ if __name__ == '__main__':
     # Load the dataset
     data_dir = f"{p_args.data_dir}/{p_args.dataset}"
     data_files = {"train": [], "validation": []}
-    data_files["train"].append(f"{data_dir}/{p_args.dataratio}/train.json")
+    data_files["train"].append(f"{data_dir}/{p_args.data_ratio}/train.json")
     data_files["validation"].append(f"{data_dir}/validation.json")
     datasets = load_dataset(path="json", data_dir=data_dir, data_files=data_files, field='data')
 
