@@ -27,7 +27,7 @@ if __name__ == '__main__':
 
     parser.add_argument('--seed', default=0, type=int, help='Seed')
     parser.add_argument('--model', default='bert-base', type=str, help='only bert-base available')
-    parser.add_argument('--dataratio', default='1.0', type=str, help='data ratio')
+    parser.add_argument('--data_ratio', default='1.0', type=str, help='data ratio')
     parser.add_argument('--data_dir', default='data', type=str, help='data directory')
     parser.add_argument('--dataset', default='ynat', type=str, help='ynat, hateful')
     parser.add_argument('--output_dir', default='checkpoint/', type=str, help='Checkpoint directory/')
