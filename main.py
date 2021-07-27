@@ -59,9 +59,10 @@ if __name__ == '__main__':
         
     # Load the dataset
     data_dir = f"{p_args.data_dir}/{p_args.dataset}"
-    data_files = {"train": [], "validation": []}
+    data_files = {"train": [], "valid": [], "test": []}
     data_files["train"].append(f"{data_dir}/{p_args.data_ratio}/train.json")
-    data_files["validation"].append(f"{data_dir}/validation.json")
+    data_files["valid"].append(f"{data_dir}/{p_args.data_ratio}/valid.json")
+    data_files["test"].append(f"{data_dir}/test.json")
     datasets = load_dataset(path="json", data_dir=data_dir, data_files=data_files, field='data')
 
     # Load the metric
@@ -98,12 +99,13 @@ if __name__ == '__main__':
     preprocessed_datasets = datasets.map(preprocess_function, batched=True)
 
     train_dataset = preprocessed_datasets['train']
-    valid_dataset = preprocessed_datasets['validation']
+    valid_dataset = preprocessed_datasets['valid']
+    test_dataset = preprocessed_datasets['test']
 
     args = TrainingArguments(
         output_dir=p_args.output_dir, evaluation_strategy='epoch', learning_rate=p_args.lr,
         per_device_train_batch_size=p_args.batch_size, per_device_eval_batch_size=p_args.batch_size,
-        num_train_epochs=p_args.total_epochs, weight_decay=p_args.wd,
+        num_train_epochs=p_args.total_epochs, weight_decay=p_args.wd, load_best_model_at_end=True, save_strategy='epoch',
         warmup_ratio=p_args.wr, seed=p_args.seed, save_total_limit=1,
         logging_strategy="no", label_smoothing_factor=p_args.label_smoothing
     )
@@ -121,6 +123,7 @@ if __name__ == '__main__':
 
     trainer.train()
     trainer.evaluate()
+    trainer.predict(test_dataset)
 
     log_history = trainer.state.log_history
 
