@@ -123,7 +123,7 @@ if __name__ == '__main__':
 
     trainer.train()
     trainer.evaluate()
-    trainer.predict(test_dataset)
+    predict_result = trainer.predict(test_dataset)
 
     log_history = trainer.state.log_history
 
@@ -156,7 +156,8 @@ if __name__ == '__main__':
         result = {
             'seed': p_args.seed,
             'time': elapsed_time,
-            'results': log_history,
+            'train_results': log_history,
+            'test_results': predict_result[2],
         }
 
         json.dump(result, f, indent=2)
