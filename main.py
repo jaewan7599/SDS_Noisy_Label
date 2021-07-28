@@ -39,6 +39,8 @@ if __name__ == '__main__':
     parser.add_argument('--total_epochs', default=10, type=int, help='Number of epochs')
     parser.add_argument('--mixup', default=False, type=str2bool, help="Mixup Method")
     parser.add_argument('--label_smoothing', default=0.0, type=float, help="Label smoothing factor")
+    parser.add_argument('--p_threshold', default=0.5, type=float, help="MentorNet")
+    parser.add_argument('--warmup_period', default=2, type=int, help="MentorNet")
 
     p_args = parser.parse_args()
 
@@ -107,7 +109,8 @@ if __name__ == '__main__':
         per_device_train_batch_size=p_args.batch_size, per_device_eval_batch_size=p_args.batch_size,
         num_train_epochs=p_args.total_epochs, weight_decay=p_args.wd, load_best_model_at_end=True, save_strategy='epoch',
         warmup_ratio=p_args.wr, seed=p_args.seed, save_total_limit=1, metric_for_best_model="eval_f1",
-        logging_strategy="no", label_smoothing_factor=p_args.label_smoothing
+        logging_strategy="no", label_smoothing_factor=p_args.label_smoothing, 
+        p_threshold=p_args.p_threshold, warmup_period=p_args.warmup_period
     )
 
     if p_args.mixup:
