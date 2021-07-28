@@ -106,7 +106,7 @@ if __name__ == '__main__':
         output_dir=p_args.output_dir, evaluation_strategy='epoch', learning_rate=p_args.lr,
         per_device_train_batch_size=p_args.batch_size, per_device_eval_batch_size=p_args.batch_size,
         num_train_epochs=p_args.total_epochs, weight_decay=p_args.wd, load_best_model_at_end=True, save_strategy='epoch',
-        warmup_ratio=p_args.wr, seed=p_args.seed, save_total_limit=1,
+        warmup_ratio=p_args.wr, seed=p_args.seed, save_total_limit=1, metric_for_best_model="eval_f1",
         logging_strategy="no", label_smoothing_factor=p_args.label_smoothing
     )
 
